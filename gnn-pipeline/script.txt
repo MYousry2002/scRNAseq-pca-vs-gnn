@@ -1,0 +1,11 @@
+# obtaining the dataset
+mkdir GSE198623
+wget -P GSE138852/ https://ftp.ncbi.nlm.nih.gov/geo/series/GSE138nnn/GSE138852/suppl/GSE138852_counts.csv.gz
+
+# subset the dataset: please check the .py file
+
+# preprocessing the dataset
+python -W ignore ./scGNN/PreprocessingscGNN.py --datasetName GSE198623_submatrix.csv --datasetDir ~/GSE198623/ --LTMGDir GSE198623/ --filetype CSV --geneSelectnum 2000 --inferLTMGTag
+
+# Running scGNN
+python -W ignore ./scGNN/scGNN.py --datasetName GSE198623 --datasetDir ./ --LTMGDir ./ --outputDir outputislets/ --EM-iteration 10 --Regu-epochs 500 --EM-epochs 200 --cluster-epochs 200 --nonsparseMode --regulized-type LTMG

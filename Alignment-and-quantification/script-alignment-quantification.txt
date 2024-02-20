@@ -1,0 +1,65 @@
+#Start
+
+#Make a directory for the pipeline
+
+mkdir pipeline
+
+cd pipeline
+
+#Get data
+
+mkdir SRR_data
+
+cd SRR_data
+
+prefetch SRR18358809 --max-size 200G
+
+cd ~/pipeline
+
+#Converting data to FASTQ
+
+mkdir FASTQ_data
+
+cd FASTQ_data
+
+fasterq-dump ~/pipeline/SRR_data/sra/SRR18358809.sra --split-files
+
+ls
+
+cd ~/pipeline
+
+#Building the reference genome using STAR
+
+mkdir reference_genome
+
+cd reference_genome
+
+wget https://ftp.ensembl.org/pub/release-108/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz
+
+wget https://ftp.ensembl.org/pub/release-108/gtf/homo_sapiens/Homo_sapiens.GRCh38.108.gtf.gz
+
+gzip -d *.gz
+
+cellranger mkgtf Homo_sapiens.GRCh38.108.gtf filtered_Homo_sapiens.GRCh38.108.gtf --attribute=gene_biotype:protein_coding
+
+STAR --runMode genomeGenerate --runThreadN 4 --genomeDir STAR_annotated_index/ --genomeFastaFiles Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa --sjdbGTFfile filtered_Homo_sapiens.GRCh38.108.gtf --genomeSAindexNbases 12 --genomeSAsparseD 3
+
+cd ~/pipeline
+
+#Aligning, transcript quantification, and generating the count matrix using STAR
+
+mkdir CB_whitelist
+
+cd CB_whitelist
+
+wget https://teichlab.github.io/scg_lib_structs/data/737K-august-2016.txt.gz
+
+gzip -d *.gz
+
+cd ~/pipeline
+
+STAR --runThreadN 16 --genomeDir reference_genome/STAR_annotated_index/ --readFilesIn FASTQ_data/SRR18358809_2.fastq FASTQ_data/SRR18358809_1.fastq --outFileNamePrefix STARsolo_results/ --outReadsUnmapped Fastx --outSAMattributes NH HI NM MD CB UB sM sS sQ --outFilterMultimapNmax 1 --outFilterMatchNmin 30 --outFilterMismatchNmax 4 --alignIntronMax 1 --alignSJDBoverhangMin 999 --soloType CB_UMI_Simple --soloCellFilter EmptyDrops_CR --soloCBwhitelist CB_whitelist/737K-august-2016.txt --outSAMtype BAM SortedByCoordinate
+
+samtools index ~/pipeline/STARsolo_results/Aligned.sortedByCoord.out.bam
+
+#End
