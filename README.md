@@ -1,4 +1,6 @@
-# Introduction
+# Decoding Single-Cell Resolved Multiomics Data: A Comparative Analysis of scRNA-seq Data Using PCA-Based and GNN-Driven Clustering
+
+## Introduction
 
 It is the post-genomic era in medicine. During the last decade, there has been an explosion of Next Generation Sequencing technologies, numerous experimental protocols that generates vast, multimodal genomics data. This led to a rush at the dry bench side to try to bridge this gap using different computational tools to extract insights for human health. 
 
@@ -15,21 +17,21 @@ Enter scGNN, a state-of-the-art tool that leverages the power of Graph Neural Ne
 
 In this project, I aim to explore and compare these two analytical paradigms — PCA-based and GNN-powered — for scRNA-seq data analysis. By applying both approaches to the same dataset, I seek to evaluate their respective strengths and limitations, and to illustrate the potential of integrating traditional and GNN-based methods for a more comprehensive understanding of single-cell transcriptomics. Although the scGNN paper (Wang et al., 2021) covers parts of these analyses, I evaluate the reproducibility of the results on a new dataset. This endeavor not only contributes to the methodological advancements in the field of data science but also enhances our ability to decipher the complex biological narratives encoded within single-cell RNA-seq data.  
 
-# Methods
+## Methods
 
-## Dataset
+### Dataset
 
 The dataset I chose for this project is single-cell RNA sequencing (scRNA-seq) data for human pancreatic islets. I obtained the dataset from the National Institutes of Health's Gene Expression Omnibus (GEO), a database repository of high throughput gene expression data and hybridization arrays, chips, and microarrays. The dataset has the GEO accession ID of GSE198623. This dataset consists of high-quality single-cell RNA-seq (scRNA-seq) data for the pancreatic islets from healthy adult human donors and is collected and deposited by Tritschler et al. (2022). This dataset is a collection of 5 samples obtained from 5 different healthy donors.
 
 Pancreatic islets, also called islets of Langerhans, are groups of cells in your pancreas. The pancreas is an organ that makes hormones to help your body break down and use food. Islets contain several types of cells, including beta cells that make the hormone insulin. Emerging evidence suggests that islet cells are functionally heterogeneous to allow a fine-tuned and efficient endocrine response to physiological changes. The recent yet rapid development in single-cell genomics technologies allowed us to analyze tissues and cell populations at single-cell resolution, which led to discovering new types of cells in different tissues and shed light on diverse mechanisms and interactions among them.
 
-## Alignment and Quantification
+### Alignment and Quantification
 
 The transformation of raw scRNA-seq data into a structured count matrix is critical for downstream analysis. This process begins with quality control to filter out low-quality reads, using tools like FastQC to assess and ensure data integrity. Next, the high-quality reads are aligned to a reference genome with an alignment tool such as STAR, which aligns the sequences and performs gene-level quantification. This step accurately maps the RNA sequences to their genomic origins and counts the number of reads for each gene, indicating gene expression levels. The culmination of this pipeline is the assembly of a count matrix, where rows represent individual cells, columns represent genes, and the matrix entries denote the expression count for each gene in each cell. This matrix is then ready for use in the subsequent clustering analysis.
 
-## Clustering Model Selection
+### Clustering Model Selection
 
-### Traditional Approach: Scanpy
+#### Traditional Approach: Scanpy
 
 For the traditional arm of my analysis, I utilized Scanpy, a well-regarded Python library designed to efficiently handle single-cell RNA sequencing data through its processing, analysis, and visualization capabilities. This library's efficiency and scalability make it particularly suitable for the high-dimensional datasets typical of single-cell RNA sequencing. The process flow of the traditional analysis pipeline I employed is depicted in figure 2.
 
@@ -44,7 +46,7 @@ The clustering itself is performed using models such as the Louvain and Leiden a
 ![alt text](images/image2.png)
 Figure 2 - the standard pipeline for scRNA-seq clustering using Scanpy or Seurat
 
-### Deep Learning: scGNN
+#### Deep Learning: scGNN
 
 For the deep learning arm of my analysis, I utilized the Single-Cell Graph Neural Network (scGNN) tool. This innovative model introduces a new dimension to the analysis of scRNA-seq data by employing a complex architecture of stacked autoencoders, orchestrating an iterative process to refine cell clustering and gene expression analysis.
 
@@ -63,7 +65,7 @@ Figure 3 - The architecture of scGNN consists of stacked autoencoders and it ite
 ![alt text](images/image4.png)
 Figure 4 - The architecture of scGNN Autoencoders. [Source: scGNN]
 
-## Gene Markers and Cell Type Annotations
+### Gene Markers and Cell Type Annotations
 
 After establishing cell clusters through the chosen clustering methods, the next critical step in scRNA-seq analysis is the identification of gene markers and cell type annotations. This phase is pivotal for understanding the biological significance of the clustered data.
 
@@ -89,7 +91,7 @@ I visualized the expression of these specific gene markers on the UMAP projectio
 
 The next task if to annotate the clusters with the cell types matching the expression patterns of the identified marker genes to known profiles of cell types. The accuracy of cell type annotations is critical, as it directly impacts the biological interpretations and conclusions that can be drawn from the scRNA-seq data. Therefore, this step is approached with rigor, often involving cross-validation with existing literature and databases to ensure the reliability of the annotations. Together, the identification of gene markers and the annotation of cell types provide a comprehensive understanding of the cellular composition within the scRNA-seq dataset, setting the stage for deeper biological insights and the potential discovery of novel cell types or states.
 
-# Results
+## Results
 
 ### Traditional Approach: Scanpy
 
@@ -134,6 +136,7 @@ Surprisingly, the imputed gene expression matrix produced by scGNN does not cont
 The visualization of the other gene markers on the UMAP (Fig. 11) as well as the dot plot (Fig. 12) show that some gene markers are relatively confined or specific to particular clusters, while others, such as PPY and GHRL, are not, indicating relatively ineffective clustering compared to the standard approach.
 
 ![alt text](images/image11.png)
+
 Figure 11 - Gene Marker Expression on UMAP visualization produced by the GNN pipeline
 
 ![alt text](images/image12.png)
@@ -141,7 +144,7 @@ Figure 12 - DotPlot visualization for cell type-specific gene markers expression
 
 The frustrating results of the scGNN pipeline could be partly explained by the fact that I used only 33% of the dataset, which makes identifying rare cell types in pancreatic islets, such as immune cells, fibroblasts, and endothelial, and separating them in unique clusters a hard task. 
 
-# Conclusion
+## Conclusion
 
 The comparative analysis of scRNA-seq data using PCA-based clustering through Scanpy and GNN-driven clustering via scGNN revealed distinct outcomes that emphasize the strengths and limitations of each approach.
 
@@ -158,7 +161,7 @@ Ultimately, this project underscores the importance of method choice in scRNA-se
 
 By showcasing the capabilities and comparing the outcomes of different analytical paradigms, this project contributes to the ongoing dialogue in the field of data science about how best to extract meaningful insights from rich biological datasets. The findings advocate for a cautious yet open-minded approach to integrating traditional analytical methods with emerging computational techniques, aiming for a synergistic blend that leverages the strengths of both to advance our understanding of genomics.
 
-# Bibliography
+## Bibliography
 
 scGNN 0.1 documentation*. scGNN. (2021). https://scgnn.readthedocs.io/en/latest/About.html 
 
