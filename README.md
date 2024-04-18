@@ -7,6 +7,7 @@ It is the post-genomic era in medicine. During the last decade, there has been a
 One currently highly adopted wet lab protocol is single-cell RNA sequencing. scRNA-seq technologies have ushered in a new era of precision in understanding the molecular intricacies of biological systems. scRNA-seq comprises thousands of individual cells' produced RNA molecules, thus providing the gene expression profiles of these cells across thousands of genes. In other words, it enables the profiling of transcriptomes at the single-cell level, offering unprecedented insights into the cellular heterogeneity and dynamics of complex tissues, disease states, and developmental processes. Since gene expression profile defines cell identity, scRNA-seq is considered the gold standard for defining cell states and phenotypes. The ability to capture the transcriptomic landscape of individual cells presents both remarkable opportunities and significant computational challenges, particularly in terms of data analysis and interpretation. The diagram in Figure 1 provides a high-level overview of the scRNA-seq technology.
 
 ![alt text](images/image.png)
+
 Figure 1 - Single Cell RNA Sequencing Technology
 
  
@@ -45,6 +46,7 @@ Upon dimensionality reduction, a neighborhood graph of cells is constructed base
 The clustering itself is performed using models such as the Louvain and Leiden algorithms. These models are tuned with resolution hyperparameters to optimize cluster granularity. Once clustering is complete, each cluster's robustness is assessed, potentially iterating the process to fine-tune the resolution parameters. Finally, these clusters are ready for downstream analysis, which I will discuss in the next section of the methods.
 
 ![alt text](images/image2.png)
+
 Figure 2 - the standard pipeline for scRNA-seq clustering using Scanpy or Seurat
 
 #### Deep Learning: scGNN
@@ -61,9 +63,11 @@ The scGNN framework is designed to process the gene expression matrix obtained f
 The scGNN model iterates through these components (Fig. 3), enhancing the accuracy of clustering and the reconstruction of gene expression with each pass. Through this iterative refinement, scGNN claims to not only cluster cells effectively but also offer a novel perspective on cellular communication and gene regulatory networks.
 
 ![alt text](images/image3.png)
+
 Figure 3 - The architecture of scGNN consists of stacked autoencoders and it iterates through them. [Source: scGNN]
 
 ![alt text](images/image4.png)
+
 Figure 4 - The architecture of scGNN Autoencoders. [Source: scGNN]
 
 ### Gene Markers and Cell Type Annotations
@@ -99,17 +103,21 @@ The next task is to annotate the clusters with the cell types matching the expre
 The standard pipeline took under 10 minutes (16 GB RAM and Intel(R) Core(TM) i7-9750HF CPU @ 2.60GHz 2.59 GHz) to run the entire dataset. It resulted in 15 clusters as shown in Figure 5. These clusters look very well visually separable and confined. The pipeline was stable with subsets of the data as it resulted in very comparable results (Fig. 6), indicating robustness.
 
 ![alt text](images/image5.png)
+
 Figure 5 - Clusters results from the standard pipeline using Scanpy
 
 ![alt text](images/image6.png)
+
 Figure 6 - Clusters results from the standard pipeline using a random 50% subset of the data
 
 The visualization of the gene markers on the UMAP (Fig. 7) as well as the dotplot (Fig. 8) show that gene markers are confined and specific to particular clusters as expected, indicating an affective clustering.
 
 ![alt text](images/image7.png)
+
 Figure 7 - Gene Marker Expression on UMAP visualization produced by the standard pipeline
 
 ![alt text](images/image8.png)
+
 Figure 8 - DotPlot visualization for cell type-specific gene markers expression per each cluster produced by the standard pipeline
 
 Combining these cell type-specific gene markers analysis with the clustering results in Figure 9 shows a clear separation of cell types across the UMAP dimensions, indicating that the clustering algorithm has successfully distinguished different biological cell types based on their gene expression profiles. The distinct clusters align well with known cell type markers, demonstrating the biological relevance of the clustering results. On the right, the Louvain clustering algorithm's results are displayed, revealing distinct groupings.
@@ -121,6 +129,7 @@ Interestingly, the region corresponding to Beta cells comprises four distinct cl
 Therefore, the standard pipeline excelled at distinguishing different cell types and subtypes based on gene expression profiles, as evidenced by the visually distinct clusters in the clusters UMAP visualization and the clean UMAP visualization of marker gene expression. However, it is crucial to have a sufficient amount of data to ensure robust classification.
 
 ![alt text](images/image9.png)
+
 Figure 9 - Cell Type Annotations and corresponding clusters produced by the standard pipeline
 
 ### Deep Learning: scGNN
@@ -130,6 +139,7 @@ Since I do not have access to a server, I ran scGNN on my PC with additional swa
 scGNN resulted in a total of 12 clusters, which is less than the expected number of unique cell types (15). The resulting clustering is visualized with UMAP in Figure 10, which clearly shows that the clusters are not well confined or segregated. This indicates poor clustering by the scGNN tool.
 
 ![alt text](images/image10.png)
+
 Figure 10 - UMAP visualization for the resulted clustering using scGNN
 
 Surprisingly, the imputed gene expression matrix produced by scGNN does not contain three of the marker genes, specifically, PTPRC, PDGFRA, and PLVAP, although they are present in the input gene expression matrix. This could be due to that these genes are markers for rare types of cells in pancreatic islets datasets, specifically, immune cells, fibroblasts, and Endothelial. This potentially indicates that scGNN removed true biological signals that are not prominent but yet important. 
@@ -140,7 +150,9 @@ The visualization of the other gene markers on the UMAP (Fig. 11), as well as th
 
 Figure 11 - Gene Marker Expression on UMAP visualization produced by the GNN pipeline
 
+
 ![alt text](images/image12.png)
+
 Figure 12 - DotPlot visualization for cell type-specific gene markers expression per each cluster using the imputed count matrix and clustering results from the scGNN pipeline
 
 The frustrating results of the scGNN pipeline could be partly explained by the fact that I used only 33% of the dataset, which makes identifying rare cell types in pancreatic islets, such as immune cells, fibroblasts, and endothelial, and separating them in unique clusters a hard task. 
@@ -156,6 +168,7 @@ The PCA-based approach, exemplified by the use of Scanpy in this analysis, has d
 One of the major advantages of PCA-based methods is their computational efficiency. The ability to process the entire dataset in under 10 minutes without the need for extensive computational resources makes PCA-based clustering particularly attractive for researchers with limited access to high-power computing facilities. Moreover, the method’s effectiveness in identifying even rare cell types further underscores its utility in diverse biological investigations.
 
 ![alt text](images/image13.png)
+
 Figure 13 - Cell Types identified in the pancreatic islets dataset using the standard pipeline
 
 ### **Limitations and Challenges with GNN-Driven Clustering**
